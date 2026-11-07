@@ -62,6 +62,9 @@ class Database:
         self.conn = await aiosqlite.connect(self.path)
         self.conn.row_factory = aiosqlite.Row
         await self.conn.executescript(SCHEMA)
+        await self.conn.execute(
+            "UPDATE matches SET notification_state='uncertain' WHERE notification_state='sending'"
+        )
         await self.conn.commit()
 
     async def close(self) -> None:

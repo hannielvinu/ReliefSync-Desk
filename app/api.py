@@ -254,6 +254,7 @@ async def decide(match_id: int, action: str, body: Decision, request: Request) -
             if match["status"] != "approved" or match["notification_state"] not in {
                 "failed",
                 "pending",
+                "uncertain",
             }:
                 raise HTTPException(409, "Only an unsent approved notification can be retried")
         elif action == "complete":
@@ -289,6 +290,10 @@ async def decide(match_id: int, action: str, body: Decision, request: Request) -
             "UPDATE matches SET status=?,decided_at=?,decided_by='coordinator',note=? WHERE id=?",
             (new_status, now(), body.note, match_id),
         )
+        if action in {"approve", "retry"}:
+            await state.db.execute(
+                "UPDATE matches SET notification_state='sending' WHERE id=?", (match_id,)
+            )
         await state.db.audit(action, "match", match_id, actor="coordinator")
     notification_state = match["notification_state"]
     if action in {"approve", "retry"}:
