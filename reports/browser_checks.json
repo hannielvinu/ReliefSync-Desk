@@ -1,0 +1,185 @@
+{
+  "viewports": [
+    {
+      "page": "/",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/join",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/join",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/join",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/join",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/join",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/eval",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/eval",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/eval",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/eval",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/eval",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/architecture",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/architecture",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/architecture",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/architecture",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/architecture",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/about",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/about",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/about",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/about",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/about",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/safety",
+      "width": 360,
+      "height": 640,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/safety",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/safety",
+      "width": 768,
+      "height": 1024,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/safety",
+      "width": 1280,
+      "height": 800,
+      "horizontal_overflow": false
+    },
+    {
+      "page": "/safety",
+      "width": 1920,
+      "height": 1080,
+      "horizontal_overflow": false
+    }
+  ],
+  "javascript_errors": []
+}

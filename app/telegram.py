@@ -130,7 +130,7 @@ class Telegram:
                 self.chat_times.pop(next(iter(self.chat_times)))
 
     async def ack(self, msg: dict, result: Extraction, missing: bool) -> None:
-        if self.settings.telegram_ack_mode == "off":
+        if self.settings.telegram_ack_mode == "off" or not self.settings.telegram_bot_token:
             return
         # Use trusted templates rather than potentially contact-bearing provider output.
         text = (

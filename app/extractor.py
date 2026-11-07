@@ -80,9 +80,10 @@ class Extractor:
                         timeout=self.settings.llm_timeout_s,
                     )
                     response.raise_for_status()
-                    result = Extraction.model_validate(
-                        first_json(response.json()["choices"][0]["message"]["content"])
-                    )
+                    obj = first_json(response.json()["choices"][0]["message"]["content"])
+                    if set(obj) != set(Extraction.model_fields):
+                        raise ValueError("Extraction must contain exactly the required fields")
+                    result = Extraction.model_validate(obj)
                     if RUMOUR.search(text):
                         result.possible_misinformation = True
                     self.failures = 0

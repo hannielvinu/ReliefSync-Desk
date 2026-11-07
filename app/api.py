@@ -1,6 +1,7 @@
 import hmac
 import json
 import statistics
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from app.geo import approximate_area
 from app.matcher import notification, suggest
 from app.models import CardPatch, Decision, DrillStart, Ingest, Login, Page
 from app.security import public_card, redact, sign_session, valid_session
-from app.triage import invalidate_matches, priority
+from app.triage import invalidate_matches
 
 router = APIRouter()
 
@@ -50,7 +51,7 @@ async def health(request: Request) -> dict:
         "status": "ok",
         "db": "ok",
         "extractor": "llm" if state.settings.llm_configured else "fallback",
-        "circuit_open": state.extractor.open_until > __import__("time").monotonic(),
+        "circuit_open": state.extractor.open_until > time.monotonic(),
         "telegram": state.telegram.status,
         "queue_depth": state.pipeline.queue.qsize(),
         "failed_messages": failed["n"],
@@ -107,7 +108,7 @@ async def cards(
     cursor: int = Query(0, ge=0),
     sort: str = "priority",
 ) -> dict:
-    clauses, args = ["id>?", "urgency>=?"], [cursor, min_urgency]
+    clauses, args = ["urgency>=?"], [min_urgency]
     for key, value in (
         ("intent", intent),
         ("category", category),
@@ -122,20 +123,14 @@ async def cards(
     if q:
         clauses.append("(item LIKE ? OR item_en LIKE ? OR location_text LIKE ?)")
         args.extend(["%" + q + "%"] * 3)
+    priority_sql = "urgency*20 + min(repeat_count-1,5)*3 + min(max((julianday('now')-julianday(created_at))*144,0),10) + CASE WHEN vulnerable_flags!='[]' THEN 5 ELSE 0 END"
+    order = "id DESC" if sort == "newest" else "urgency DESC,id DESC" if sort == "urgency" else f"({priority_sql}) DESC,id DESC"
     rows = await request.app.state.db.all(
-        "SELECT * FROM cards WHERE " + " AND ".join(clauses) + " ORDER BY id LIMIT ?",
-        (*args, limit + 1),
+        "SELECT * FROM cards WHERE " + " AND ".join(clauses) + f" ORDER BY {order} LIMIT ? OFFSET ?",
+        (*args, limit + 1, cursor),
     )
-    next_cursor = rows[limit - 1]["id"] if len(rows) > limit else None
+    next_cursor = cursor + limit if len(rows) > limit else None
     rows = rows[:limit]
-    rows.sort(
-        key=(lambda c: c["id"])
-        if sort == "newest"
-        else (lambda c: c["urgency"])
-        if sort == "urgency"
-        else priority,
-        reverse=True,
-    )
     return {"items": [safe(row, request) for row in rows], "next_cursor": next_cursor}
 
 

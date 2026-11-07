@@ -1,0 +1,23 @@
+[Unit]
+Description=ReliefSync Desk
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=reliefsync
+Group=reliefsync
+WorkingDirectory=/opt/reliefsync
+EnvironmentFile=/opt/reliefsync/.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/reliefsync/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/reliefsync/data
+
+[Install]
+WantedBy=multi-user.target
