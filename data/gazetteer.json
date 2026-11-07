@@ -1,0 +1,14 @@
+[
+ {"name":"Velachery","lat":12.9756,"lng":80.2207,"aliases":["velachery","வேளச்சேரி","velacheri"]},
+ {"name":"Pallikaranai","lat":12.9377,"lng":80.2154,"aliases":["pallikaranai","பள்ளிக்கரணை"]},
+ {"name":"Perungudi","lat":12.9654,"lng":80.2461,"aliases":["perungudi","பெருங்குடி"]},
+ {"name":"Taramani","lat":12.9816,"lng":80.2433,"aliases":["taramani","தரமணி"]},
+ {"name":"Tambaram","lat":12.9249,"lng":80.1000,"aliases":["tambaram","தாம்பரம்"]},
+ {"name":"Manali","lat":13.1667,"lng":80.2667,"aliases":["manali","மணலி"]},
+ {"name":"Adyar","lat":13.0012,"lng":80.2565,"aliases":["adyar","அடையாறு"]},
+ {"name":"Paiporta","lat":39.4287,"lng":-0.4181,"aliases":["paiporta"]},
+ {"name":"Alfafar","lat":39.4234,"lng":-0.3915,"aliases":["alfafar"]},
+ {"name":"Catarroja","lat":39.4016,"lng":-0.4039,"aliases":["catarroja"]},
+ {"name":"Sedavi","lat":39.4259,"lng":-0.3855,"aliases":["sedavi","sedaví"]},
+ {"name":"Benetusser","lat":39.4249,"lng":-0.3975,"aliases":["benetusser","benetússer"]}
+]
