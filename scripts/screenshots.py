@@ -48,6 +48,8 @@ async def main() -> None:
         await page.screenshot(path=str(output / "dashboard-desktop.png"), full_page=True)
         if args.record:
             await page.wait_for_timeout(18000)
+        else:
+            await context.request.post(args.url + "/api/simulate/pause", data={})
         await page.locator(".match-card summary").first.click()
         await page.screenshot(path=str(output / "suggested-match.png"), full_page=True)
         if args.record:
@@ -77,7 +79,9 @@ async def main() -> None:
             checks.append(
                 {"page": "/", "width": width, "height": height, "horizontal_overflow": overflow}
             )
-            await page.screenshot(path=str(output / f"dashboard-{width}.png"), full_page=True)
+            await page.screenshot(
+                path=str(output / f"dashboard-{width}.png"), full_page=width >= 768
+            )
         await page.set_viewport_size({"width": 1440, "height": 1000})
         for path in ("join", "eval", "architecture", "about", "safety"):
             await page.goto(args.url + "/" + path)
@@ -103,7 +107,7 @@ async def main() -> None:
         await page.locator(".tabs button[data-tab=board]").click()
         await page.get_by_label("Interface language").select_option("ta")
         await page.wait_for_timeout(500)
-        await page.screenshot(path=str(output / "dashboard-tamil.png"), full_page=True)
+        await page.screenshot(path=str(output / "dashboard-tamil.png"), full_page=False)
         checks.append(
             {
                 "page": "/ (Tamil)",

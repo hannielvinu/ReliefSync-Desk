@@ -1,0 +1,54 @@
+{
+  "source": "Fresh clone of public GitHub repository",
+  "commit": "b13affbd2bae6b65aea36d91278dc99456136e53",
+  "python": "3.11.4",
+  "health": {
+    "status": "ok",
+    "db": "ok",
+    "extractor": "fallback",
+    "circuit_open": false,
+    "telegram": "disabled",
+    "queue_depth": 0,
+    "failed_messages": 0,
+    "version": "1.0.0"
+  },
+  "stats": {
+    "cards_total": 40,
+    "cards_open": 38,
+    "needs": 18,
+    "offers": 20,
+    "duplicates_merged": 1,
+    "messages_processed": 44,
+    "processing": {
+      "ignored": 4,
+      "processed": 40
+    },
+    "matches_suggested": 24,
+    "matches_approved": 0,
+    "matches_completed": 0,
+    "extractor_mix": {
+      "fallback": 40
+    },
+    "by_language": {
+      "de": 4,
+      "en": 20,
+      "es": 6,
+      "ta": 10
+    },
+    "participants": 43,
+    "countries_self_reported": 0,
+    "simulated_participants": 43,
+    "median_seconds_message_to_card": 0.0,
+    "simulation_running": false
+  },
+  "cards": 40,
+  "matches": 24,
+  "insulin_approval": {
+    "ok": true,
+    "status": "approved",
+    "notification_state": "would_send"
+  },
+  "completed": true,
+  "secrets_configured": false,
+  "checkout": "C:\\Users\\dragn\\AppData\\Local\\Temp\\reliefsync-smoke-xo689sbt"
+}

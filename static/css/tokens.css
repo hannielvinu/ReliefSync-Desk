@@ -1,7 +1,178 @@
-@font-face{font-family:Inter;src:url('/static/fonts/inter.woff2') format('woff2');font-display:swap;font-weight:100 900}
-@font-face{font-family:'Noto Sans Tamil';src:url('/static/fonts/tamil.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'JetBrains Mono';src:url('/static/fonts/mono.woff2') format('woff2');font-display:swap}
-:root{color-scheme:light;--bg:#f5f8fa;--surface:#fff;--text:#0b1f33;--muted:#526578;--border:#dce4ea;--primary:#0e7c86;--primary-hover:#0a646c;--accent:#f5a524;--ok:#247a53;--danger:#b72f2f;--soft:#eaf5f4;--shadow:0 4px 24px #102d4010;--u1:#64748b;--u2:#2f80ed;--u3:#9b6d00;--u4:#c14508;--u5:#c6251b;--radius:12px}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#0a1622;--surface:#11212f;--text:#e8eef3;--muted:#a4b6c5;--border:#294253;--primary:#52c7d1;--primary-hover:#85e0e6;--soft:#13363c;--ok:#67d9a4;--danger:#ff8b85;--u3:#f0bf43;--u4:#ffab76;--u5:#ff9289}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#0a1622;--surface:#11212f;--text:#e8eef3;--muted:#a4b6c5;--border:#294253;--primary:#52c7d1;--primary-hover:#85e0e6;--soft:#13363c;--ok:#67d9a4;--danger:#ff8b85;--u3:#f0bf43;--u4:#ffab76;--u5:#ff9289}
-*{box-sizing:border-box}body{margin:0;font:14px/1.5 Inter,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text)}[lang=ta]{font-family:'Noto Sans Tamil',Latha,sans-serif;line-height:1.7}button,input,select,textarea{font:inherit}button,a,input,select,textarea{touch-action:manipulation}button{cursor:pointer}a{color:var(--primary)}button{color:inherit}button:disabled{opacity:.55;cursor:wait}:focus-visible{outline:3px solid var(--primary);outline-offset:3px}button,input,select,textarea{border:1px solid var(--border);border-radius:8px;background:var(--surface);min-height:44px}button{padding:8px 14px;font-weight:600}input,select,textarea{padding:10px 12px;color:var(--text);max-width:100%}button:hover{border-color:var(--primary)}.primary{background:var(--primary);border-color:var(--primary);color:var(--surface)}.primary:hover{background:var(--primary-hover)}.muted{color:var(--muted)}.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}[hidden]{display:none!important}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@font-face {
+  font-family: Inter;
+  src: url("/static/fonts/inter.woff2") format("woff2");
+  font-display: swap;
+  font-weight: 100 900;
+}
+@font-face {
+  font-family: "Noto Sans Tamil";
+  src: url("/static/fonts/tamil.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/static/fonts/mono.woff2") format("woff2");
+  font-display: swap;
+}
+:root {
+  color-scheme: light;
+  --bg: #f5f8fa;
+  --surface: #fff;
+  --text: #0b1f33;
+  --muted: #526578;
+  --border: #dce4ea;
+  --primary: #0e7c86;
+  --primary-hover: #0a646c;
+  --accent: #f5a524;
+  --ok: #247a53;
+  --danger: #b72f2f;
+  --soft: #eaf5f4;
+  --shadow: 0 4px 24px #102d4010;
+  --u1: #64748b;
+  --u2: #2f80ed;
+  --u3: #9b6d00;
+  --u4: #c14508;
+  --u5: #c6251b;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0a1622;
+    --surface: #11212f;
+    --text: #e8eef3;
+    --muted: #a4b6c5;
+    --border: #294253;
+    --primary: #52c7d1;
+    --primary-hover: #85e0e6;
+    --soft: #13363c;
+    --ok: #67d9a4;
+    --danger: #ff8b85;
+    --u3: #f0bf43;
+    --u4: #ffab76;
+    --u5: #ff9289;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a1622;
+  --surface: #11212f;
+  --text: #e8eef3;
+  --muted: #a4b6c5;
+  --border: #294253;
+  --primary: #52c7d1;
+  --primary-hover: #85e0e6;
+  --soft: #13363c;
+  --ok: #67d9a4;
+  --danger: #ff8b85;
+  --u3: #f0bf43;
+  --u4: #ffab76;
+  --u5: #ff9289;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font:
+    14px/1.5 Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+[lang="ta"] {
+  font-family: "Noto Sans Tamil", Latha, sans-serif;
+  line-height: 1.7;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: var(--primary);
+}
+button {
+  color: inherit;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+button,
+input,
+select,
+textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  min-height: 44px;
+}
+button {
+  padding: 8px 14px;
+  font-weight: 600;
+}
+input,
+select,
+textarea {
+  padding: 10px 12px;
+  color: var(--text);
+  max-width: 100%;
+}
+button:hover {
+  border-color: var(--primary);
+}
+.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--surface);
+}
+.primary:hover {
+  background: var(--primary-hover);
+}
+.muted {
+  color: var(--muted);
+}
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+[hidden] {
+  display: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

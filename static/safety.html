@@ -1,1 +1,71 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Safety · ReliefSync Desk</title><link rel="icon" href="/static/img/favicon.svg"><link rel="stylesheet" href="/static/css/tokens.css"><link rel="stylesheet" href="/static/css/app.css"><script type="module" src="/static/js/pages.js"></script></head><body><a class="skip" href="#main">Skip to content</a><div id="shared-header"></div><main id="main" class="prose"><nav aria-label="Page navigation"><a href="/">Desk</a> · <a href="/about">About</a> · <a href="/architecture">System</a> · <a href="/join">Join</a> · <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a></nav><p class="eyebrow">RELIEFSYNC DESK / SAFETY</p><h1>Useful coordination starts with care.</h1><p class="lead">ReliefSync Desk is not an emergency service. Contact local emergency services first when someone is in immediate danger.</p><h2>What is stored</h2><p>Message text, private Telegram routing identifiers, structured cards, timestamps, approximate public locations, exact private locations if supplied, and an audit trail. Sender identifiers used for grouping are salted hashes. Optional country information is self-reported. Raw text may be sent to the extraction provider when one is configured. Remote geocoding is disabled by default.</p><h2>What visitors can see</h2><p>Contact details are redacted using rules. Coordinates are snapped to an approximate grid with a deterministic offset. Exact coordinates and raw text require coordinator login. Automated redaction is imperfect: use broad locality names and keep sensitive details out of group posts.</p><h2>Control your records</h2><p>Send <code>/forget</code> to the Telegram bot. Your app messages, cards and participation row are deleted and related matches rejected. This cannot erase messages already posted in Telegram or copies held by external providers. Demo reset deletes simulated records only. Operators control backup retention and must delete expired backup copies themselves.</p><h2>A person approves every connection</h2><p>Extraction confidence is an estimate, not a guarantee. Volunteers and availability are not verified. Coordinators should verify both sides before approval and avoid sending children or vulnerable people to unknown contacts. Misinformation cards are blocked from matching.</p><h2>Remaining risks</h2><p>We do not provide identity checks, background checks, end-to-end encryption of the database, medical decisions, verified availability, guaranteed message delivery or protection from determined adversaries. Shared coordinator credentials are intended for a small controlled demo, not a large public emergency operation.</p></main><div id="shared-footer"></div><div id="toast" class="toast" role="status" hidden></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Safety · ReliefSync Desk</title>
+    <link rel="icon" href="/static/img/favicon.svg" />
+    <link rel="stylesheet" href="/static/css/tokens.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script type="module" src="/static/js/pages.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="shared-header"></div>
+    <main id="main" class="prose">
+      <nav aria-label="Page navigation">
+        <a href="/">Desk</a> · <a href="/about">About</a> ·
+        <a href="/architecture">System</a> · <a href="/join">Join</a> ·
+        <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a>
+      </nav>
+      <p class="eyebrow">RELIEFSYNC DESK / SAFETY</p>
+      <h1>Useful coordination starts with care.</h1>
+      <p class="lead">
+        ReliefSync Desk is not an emergency service. Contact local emergency
+        services first when someone is in immediate danger.
+      </p>
+      <h2>What is stored</h2>
+      <p>
+        Message text, private Telegram routing identifiers, structured cards,
+        timestamps, approximate public locations, exact private locations if
+        supplied, and an audit trail. Sender identifiers used for grouping are
+        salted hashes. Optional country information is self-reported. Raw text
+        may be sent to the extraction provider when one is configured. Remote
+        geocoding is disabled by default.
+      </p>
+      <h2>What visitors can see</h2>
+      <p>
+        Contact details are redacted using rules. Coordinates are snapped to an
+        approximate grid with a deterministic offset. Exact coordinates and raw
+        text require coordinator login. Automated redaction is imperfect: use
+        broad locality names and keep sensitive details out of group posts.
+      </p>
+      <h2>Control your records</h2>
+      <p>
+        Send <code>/forget</code> to the Telegram bot. Your app messages, cards
+        and participation row are deleted and related matches rejected. This
+        cannot erase messages already posted in Telegram or copies held by
+        external providers. Demo reset deletes simulated records only. Operators
+        control backup retention and must delete expired backup copies
+        themselves.
+      </p>
+      <h2>A person approves every connection</h2>
+      <p>
+        Extraction confidence is an estimate, not a guarantee. Volunteers and
+        availability are not verified. Coordinators should verify both sides
+        before approval and avoid sending children or vulnerable people to
+        unknown contacts. Misinformation cards are blocked from matching.
+      </p>
+      <h2>Remaining risks</h2>
+      <p>
+        We do not provide identity checks, background checks, end-to-end
+        encryption of the database, medical decisions, verified availability,
+        guaranteed message delivery or protection from determined adversaries.
+        Shared coordinator credentials are intended for a small controlled demo,
+        not a large public emergency operation.
+      </p>
+    </main>
+    <div id="shared-footer"></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

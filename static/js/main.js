@@ -1,14 +1,195 @@
-import {api,post} from './api.js';
-import {t} from './i18n.js';
-import {header,toast,openDrawer} from './ui.js';
-import {renderBoard} from './board.js';
-import {renderStats} from './stats.js';
-import {initMap,renderMap,highlight} from './map.js';
-import {renderMatches,initMatchDialog} from './matches.js';
-let config={},filter='all',nextCursor=null,loaded=[],refreshTimer,refreshing=false,repeat=false;
-function parameters(){const params=new URLSearchParams({category:document.querySelector('#category').value,min_urgency:document.querySelector('#urgency').value,lang:document.querySelector('#message-language').value,q:document.querySelector('#search').value,sort:document.querySelector('#sort').value,limit:100});if(['need','offer'].includes(filter))params.set('intent',filter);if(filter==='matched')params.set('status','matched');if(filter==='flagged')params.set('flagged','true');return params}
-function selectCard(id){highlight(id);openDrawer(id,config,refresh)}
-async function refresh(append=false){if(refreshing){repeat=true;return}refreshing=true;try{const params=parameters();if(append&&nextCursor)params.set('cursor',nextCursor);const [cards,matches,stats,health]=await Promise.all([api('/api/cards?'+params),api('/api/matches'),api('/api/stats'),api('/health')]);loaded=append?[...loaded,...cards.items]:cards.items;nextCursor=cards.next_cursor;renderBoard(loaded,selectCard);renderMatches(matches.items,refresh);renderStats(stats);renderMap(loaded,matches.items,selectCard);document.querySelector('#load-more').hidden=!nextCursor;document.querySelector('#error').hidden=true;document.querySelector('#extractor-badge').textContent=health.circuit_open?'Fallback · provider unavailable':health.extractor==='llm'?'LLM configured':'Fallback extractor';document.querySelector('#sim-badge').hidden=!loaded.some(c=>c.simulated);document.querySelector('#start-drill').disabled=stats.simulation_running}catch(err){document.querySelector('#error-text').textContent=err.message;document.querySelector('#error').hidden=false}finally{refreshing=false;if(repeat){repeat=false;scheduleRefresh()}}}
-function scheduleRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>refresh(),180)}
-async function init(){try{config=await api('/api/config');header(config);document.querySelector('#demo-banner').hidden=!config.demo_mode;document.querySelector('#demo-controls').hidden=!(config.demo_mode||config.authenticated);initMap();initMatchDialog();document.querySelector('#retry').onclick=()=>refresh();document.querySelector('#filters').addEventListener('click',event=>{const target=event.target.closest('[data-filter]');if(!target)return;filter=target.dataset.filter;for(const button of document.querySelectorAll('[data-filter]')){button.classList.toggle('active',button===target);button.setAttribute('aria-pressed',String(button===target))}refresh()});for(const id of ['category','urgency','message-language','sort'])document.querySelector('#'+id).onchange=()=>refresh();document.querySelector('#search').oninput=scheduleRefresh;document.querySelector('#load-more').onclick=()=>refresh(true);for(const[action,id]of[['start','start-drill'],['pause','pause-drill'],['reset','reset-drill']])document.querySelector('#'+id).onclick=async()=>{try{if(action==='reset'&&!confirm('Delete all simulated drill data? Real intake is preserved.'))return;await post('/api/simulate/'+action,action==='start'?{speed:Number(document.querySelector('#speed').value)}:{});refresh()}catch(err){toast(err.message)}};document.querySelector('#custom-form').onsubmit=async event=>{event.preventDefault();try{const input=document.querySelector('#custom-message');await post('/api/ingest',{text:input.value,simulated:true,sender_id:'web-'+crypto.randomUUID()});input.value='';toast('Simulated message queued')}catch(err){toast(err.message)}};for(const button of document.querySelectorAll('.tabs [data-tab]'))button.onclick=()=>{const tab=button.dataset.tab;document.body.dataset.tab=tab;document.querySelector('#board-panel').classList.toggle('active-mobile',tab==='board');document.querySelector('#matches-panel').classList.toggle('active-mobile',tab==='matches');document.querySelector('#stats').classList.toggle('active-mobile',tab==='stats');document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b===button))};document.addEventListener('language-change',scheduleRefresh);await refresh();const stream=new EventSource('/api/events');stream.onopen=()=>{document.querySelector('#live-status').textContent=t('live')};stream.onerror=()=>{document.querySelector('#live-status').textContent=t('offline')};for(const name of ['card_created','card_updated','match_suggested','match_updated','stats'])stream.addEventListener(name,()=>{scheduleRefresh();if(name==='card_created'||name==='match_suggested')document.querySelector('#announcements').textContent=name==='card_created'?'New request received':'New match suggested'});setInterval(()=>{if(stream.readyState!==EventSource.OPEN)refresh()},5000);window.addEventListener('online',scheduleRefresh)}catch(err){document.querySelector('#error-text').textContent=err.message;document.querySelector('#error').hidden=false}}
+import { api, post } from "./api.js";
+import { t } from "./i18n.js";
+import { header, toast, openDrawer } from "./ui.js";
+import { renderBoard } from "./board.js";
+import { renderStats } from "./stats.js";
+import { initMap, renderMap, highlight } from "./map.js";
+import { renderMatches, initMatchDialog } from "./matches.js";
+let config = {},
+  filter = "all",
+  nextCursor = null,
+  loaded = [],
+  refreshTimer,
+  refreshing = false,
+  repeat = false;
+function parameters() {
+  const params = new URLSearchParams({
+    category: document.querySelector("#category").value,
+    min_urgency: document.querySelector("#urgency").value,
+    lang: document.querySelector("#message-language").value,
+    q: document.querySelector("#search").value,
+    sort: document.querySelector("#sort").value,
+    limit: 100,
+  });
+  if (["need", "offer"].includes(filter)) params.set("intent", filter);
+  if (filter === "matched") params.set("status", "matched");
+  if (filter === "flagged") params.set("flagged", "true");
+  return params;
+}
+function selectCard(id) {
+  highlight(id);
+  openDrawer(id, config, refresh);
+}
+async function refresh(append = false) {
+  if (refreshing) {
+    repeat = true;
+    return;
+  }
+  refreshing = true;
+  try {
+    const params = parameters();
+    if (append && nextCursor) params.set("cursor", nextCursor);
+    const [cards, matches, stats, health] = await Promise.all([
+      api("/api/cards?" + params),
+      api("/api/matches"),
+      api("/api/stats"),
+      api("/health"),
+    ]);
+    loaded = append ? [...loaded, ...cards.items] : cards.items;
+    nextCursor = cards.next_cursor;
+    renderBoard(loaded, selectCard);
+    renderMatches(matches.items, refresh);
+    renderStats(stats);
+    renderMap(loaded, matches.items, selectCard);
+    document.querySelector("#load-more").hidden = !nextCursor;
+    document.querySelector("#error").hidden = true;
+    document.querySelector("#extractor-badge").textContent = health.circuit_open
+      ? "Fallback · provider unavailable"
+      : health.extractor === "llm"
+        ? "LLM configured"
+        : "Fallback extractor";
+    document.querySelector("#sim-badge").hidden = !loaded.some(
+      (c) => c.simulated,
+    );
+    document.querySelector("#start-drill").disabled = stats.simulation_running;
+  } catch (err) {
+    document.querySelector("#error-text").textContent = err.message;
+    document.querySelector("#error").hidden = false;
+  } finally {
+    refreshing = false;
+    if (repeat) {
+      repeat = false;
+      scheduleRefresh();
+    }
+  }
+}
+function scheduleRefresh() {
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(() => refresh(), 180);
+}
+async function init() {
+  try {
+    config = await api("/api/config");
+    header(config);
+    document.querySelector("#demo-banner").hidden = !config.demo_mode;
+    document.querySelector("#demo-controls").hidden = !(
+      config.demo_mode || config.authenticated
+    );
+    initMap();
+    initMatchDialog();
+    document.querySelector("#retry").onclick = () => refresh();
+    document.querySelector("#filters").addEventListener("click", (event) => {
+      const target = event.target.closest("[data-filter]");
+      if (!target) return;
+      filter = target.dataset.filter;
+      for (const button of document.querySelectorAll("[data-filter]")) {
+        button.classList.toggle("active", button === target);
+        button.setAttribute("aria-pressed", String(button === target));
+      }
+      refresh();
+    });
+    for (const id of ["category", "urgency", "message-language", "sort"])
+      document.querySelector("#" + id).onchange = () => refresh();
+    document.querySelector("#search").oninput = scheduleRefresh;
+    document.querySelector("#load-more").onclick = () => refresh(true);
+    for (const [action, id] of [
+      ["start", "start-drill"],
+      ["pause", "pause-drill"],
+      ["reset", "reset-drill"],
+    ])
+      document.querySelector("#" + id).onclick = async () => {
+        try {
+          if (
+            action === "reset" &&
+            !confirm(
+              "Delete all simulated drill data? Real intake is preserved.",
+            )
+          )
+            return;
+          await post(
+            "/api/simulate/" + action,
+            action === "start"
+              ? { speed: Number(document.querySelector("#speed").value) }
+              : {},
+          );
+          refresh();
+        } catch (err) {
+          toast(err.message);
+        }
+      };
+    document.querySelector("#custom-form").onsubmit = async (event) => {
+      event.preventDefault();
+      try {
+        const input = document.querySelector("#custom-message");
+        await post("/api/ingest", {
+          text: input.value,
+          simulated: true,
+          sender_id: "web-" + crypto.randomUUID(),
+        });
+        input.value = "";
+        toast("Simulated message queued");
+      } catch (err) {
+        toast(err.message);
+      }
+    };
+    for (const button of document.querySelectorAll(".tabs [data-tab]"))
+      button.onclick = () => {
+        const tab = button.dataset.tab;
+        document.body.dataset.tab = tab;
+        document
+          .querySelector("#board-panel")
+          .classList.toggle("active-mobile", tab === "board");
+        document
+          .querySelector("#matches-panel")
+          .classList.toggle("active-mobile", tab === "matches");
+        document
+          .querySelector("#stats")
+          .classList.toggle("active-mobile", tab === "stats");
+        document
+          .querySelectorAll(".tabs button")
+          .forEach((b) => b.classList.toggle("active", b === button));
+      };
+    document.addEventListener("language-change", scheduleRefresh);
+    await refresh();
+    const stream = new EventSource("/api/events");
+    stream.onopen = () => {
+      document.querySelector("#live-status").textContent = t("live");
+    };
+    stream.onerror = () => {
+      document.querySelector("#live-status").textContent = t("offline");
+    };
+    for (const name of [
+      "card_created",
+      "card_updated",
+      "match_suggested",
+      "match_updated",
+      "stats",
+    ])
+      stream.addEventListener(name, () => {
+        scheduleRefresh();
+        if (name === "card_created" || name === "match_suggested")
+          document.querySelector("#announcements").textContent =
+            name === "card_created"
+              ? "New request received"
+              : "New match suggested";
+      });
+    setInterval(() => {
+      if (stream.readyState !== EventSource.OPEN) refresh();
+    }, 5000);
+    window.addEventListener("online", scheduleRefresh);
+  } catch (err) {
+    document.querySelector("#error-text").textContent = err.message;
+    document.querySelector("#error").hidden = false;
+  }
+}
 init();

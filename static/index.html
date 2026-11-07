@@ -1,12 +1,296 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="A volunteer dispatch desk turning multilingual community messages into coordinated help, with human approval."><title>Operations · ReliefSync Desk</title><link rel="icon" href="/static/img/favicon.svg"><link rel="stylesheet" href="/static/css/tokens.css"><link rel="stylesheet" href="/static/css/app.css"><link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css"><script src="/static/vendor/leaflet/leaflet.js" defer></script><script type="module" src="/static/js/main.js"></script></head>
-<body data-tab="map"><a class="skip" href="#main">Skip to operations</a><div id="shared-header"></div><div id="error" class="error-banner" role="alert" hidden><span id="error-text"></span><button id="retry" data-i18n="retry">Retry</button></div><div class="banner" id="demo-banner" hidden><span data-i18n="demoNotice">Demo mode: approvals are open for simulated cards.</span><span class="badge simulation" data-i18n="simulation">SIMULATED DATA</span></div>
-<main id="main"><div class="workspace-heading"><div><p class="eyebrow" data-i18n="workspace">VOLUNTEER OPERATIONS</p><h1 data-i18n="operations">Every message. A way forward.</h1><p class="muted" data-i18n="subtitle">Triage needs, connect resources, keep people in the loop.</p></div><div class="workspace-meta"><span class="status" id="live-status">Connecting</span><span class="badge" id="extractor-badge">Fallback</span><span class="badge simulation" id="sim-badge" hidden data-i18n="simulation">SIMULATED DATA</span></div></div>
-<section class="stats" id="stats" aria-label="Operations statistics"></section>
-<div class="ops-grid"><section class="panel board-panel" id="board-panel" aria-labelledby="board-title"><div class="panel-header"><h2 id="board-title" data-i18n="board">Request board</h2><span class="count" id="board-count">0 cards</span></div><div class="filters"><div class="filter-chips" id="filters"><button data-filter="all" class="active" aria-pressed="true" data-i18n="all">All</button><button data-filter="need" aria-pressed="false" data-i18n="needs">Needs</button><button data-filter="offer" aria-pressed="false" data-i18n="offers">Offers</button><button data-filter="matched" aria-pressed="false" data-i18n="matched">Matched</button><button data-filter="flagged" aria-pressed="false" data-i18n="flagged">Flagged</button></div><div class="search-row"><input id="search" type="search" aria-label="Search resources or areas" placeholder="Search resources or areas…"><select id="category" aria-label="Category"><option value="" data-i18n="categories">All categories</option><option value="medical">Medical</option><option value="rescue">Rescue</option><option value="water">Water</option><option value="food">Food</option><option value="shelter">Shelter</option><option value="supplies">Supplies</option><option value="power">Power</option><option value="transport">Transport</option></select></div><div class="filter-row"><select id="urgency" aria-label="Minimum urgency"><option value="1" data-i18n="urgencies">All urgencies</option><option value="3">U3+ Priority</option><option value="4">U4+ High</option><option value="5">U5 Critical</option></select><select id="message-language" aria-label="Message language"><option value="" data-i18n="languages">All languages</option><option value="en">English</option><option value="ta">தமிழ்</option><option value="es">Español</option><option value="de">Deutsch</option></select><select id="sort" aria-label="Sort cards"><option value="priority">Priority</option><option value="newest">Newest</option><option value="urgency">Urgency</option></select></div></div><div class="card-list" id="card-list"><div class="empty">Loading requests…</div></div><button id="load-more" hidden data-i18n="loadMore">Load more</button></section>
-<section class="panel map-panel" id="map-panel" aria-labelledby="map-title"><div class="panel-header"><div class="map-heading"><h2 id="map-title" data-i18n="mapTitle">The coordination map</h2><small data-i18n="approximate">Approximate locations only</small></div></div><div id="map" role="region" aria-label="Approximate needs and offers; use Request board for accessible details"></div><div class="map-tools"><button id="fit-map" data-i18n="fit">Fit to requests ↗</button></div><div class="map-note" id="tile-error" hidden data-i18n="tileError">Map tiles are unavailable. The request board still works.</div><div class="map-legend"><span><i class="legend-dot need"></i><span data-i18n="need">Need</span></span><span><i class="legend-dot"></i><span data-i18n="offer">Offer</span></span><span data-i18n="mapLegend">U1–U5 · urgency level</span><span data-i18n="matchLine">— Suggested connection</span></div></section>
-<section class="panel matches-panel" id="matches-panel" aria-labelledby="matches-title"><div class="panel-header"><h2 id="matches-title" data-i18n="matches">Suggested matches</h2><span class="count" id="match-count">0</span></div><div class="match-list" id="match-list"><div class="empty">Looking for connections…</div></div></section></div>
-<section class="demo-panel" id="demo-controls" hidden aria-label="Simulated storm drill"><div class="demo-title"><strong data-i18n="stormDrill">Try a storm drill</strong><small data-i18n="drillHelp">45 fictional messages. One shared desk.</small></div><div class="drill-controls"><button id="start-drill" class="primary" data-i18n="runDrill">▶ Run drill</button><select id="speed" aria-label="Drill speed"><option value="1">1×</option><option value="3" selected>3×</option><option value="10">10×</option></select><button id="pause-drill" data-i18n="pause">Pause</button><button id="reset-drill" data-i18n="reset">Reset</button></div><form id="custom-form" class="custom-input"><input id="custom-message" maxlength="1000" required aria-label="Simulated custom message" placeholder="Need insulin in Velachery…"><button type="submit" data-i18n="send">Send ↗</button></form></section></main><div id="shared-footer"></div>
-<nav class="tabs" aria-label="Operations views"><button data-tab="map" class="active"><span>◉</span><span data-i18n="map">Map</span></button><button data-tab="board"><span>☷</span><span data-i18n="board">Board</span></button><button data-tab="matches"><span>⇄</span><span data-i18n="matches">Matches</span></button><button data-tab="stats"><span>▥</span><span data-i18n="stats">Stats</span></button></nav>
-<div id="drawer-backdrop" class="backdrop" hidden></div><aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="Request details" hidden tabindex="-1"></aside><dialog id="confirm-dialog"><h2 id="confirm-title">Review match</h2><form id="confirm-form"><p id="confirm-preview" class="preview"></p><label for="decision-note" data-i18n="note">Optional coordinator note</label><textarea id="decision-note" maxlength="500" rows="2"></textarea><div class="actions"><button type="button" id="cancel-decision" data-i18n="cancel">Cancel</button><button type="submit" id="confirm-action" class="primary" data-i18n="confirm">Confirm</button></div></form></dialog>
-<dialog id="login-dialog"><h2 data-i18n="login">Coordinator login</h2><form id="login-form"><label for="login-token" data-i18n="token">Coordinator token</label><input id="login-token" type="password" autocomplete="current-password" required><p class="muted" data-i18n="loginHelp">Your token stays in a secure session cookie.</p><div class="actions"><button type="button" id="cancel-login" data-i18n="cancel">Cancel</button><button type="submit" class="primary" data-i18n="login">Log in</button></div></form></dialog><div id="announcements" class="sr-only" aria-live="polite"></div><div id="toast" class="toast" role="status" hidden></div></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="A volunteer dispatch desk turning multilingual community messages into coordinated help, with human approval."
+    />
+    <title>Operations · ReliefSync Desk</title>
+    <link rel="icon" href="/static/img/favicon.svg" />
+    <link rel="stylesheet" href="/static/css/tokens.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <link rel="stylesheet" href="/static/vendor/leaflet/leaflet.css" />
+    <script src="/static/vendor/leaflet/leaflet.js" defer></script>
+    <script type="module" src="/static/js/main.js"></script>
+  </head>
+  <body data-tab="map">
+    <a class="skip" href="#main">Skip to operations</a>
+    <div id="shared-header"></div>
+    <div id="error" class="error-banner" role="alert" hidden>
+      <span id="error-text"></span
+      ><button id="retry" data-i18n="retry">Retry</button>
+    </div>
+    <div class="banner" id="demo-banner" hidden>
+      <span data-i18n="demoNotice"
+        >Demo mode: approvals are open for simulated cards.</span
+      ><span class="badge simulation" data-i18n="simulation"
+        >SIMULATED DATA</span
+      >
+    </div>
+    <main id="main">
+      <div class="workspace-heading">
+        <div>
+          <p class="eyebrow" data-i18n="workspace">VOLUNTEER OPERATIONS</p>
+          <h1 data-i18n="operations">Every message. A way forward.</h1>
+          <p class="muted" data-i18n="subtitle">
+            Triage needs, connect resources, keep people in the loop.
+          </p>
+        </div>
+        <div class="workspace-meta">
+          <span class="status" id="live-status">Connecting</span
+          ><span class="badge" id="extractor-badge">Fallback</span
+          ><span
+            class="badge simulation"
+            id="sim-badge"
+            hidden
+            data-i18n="simulation"
+            >SIMULATED DATA</span
+          >
+        </div>
+      </div>
+      <section
+        class="stats"
+        id="stats"
+        aria-label="Operations statistics"
+      ></section>
+      <div class="ops-grid">
+        <section
+          class="panel board-panel"
+          id="board-panel"
+          aria-labelledby="board-title"
+        >
+          <div class="panel-header">
+            <h2 id="board-title" data-i18n="board">Request board</h2>
+            <span class="count" id="board-count">0 cards</span>
+          </div>
+          <div class="filters">
+            <div class="filter-chips" id="filters">
+              <button
+                data-filter="all"
+                class="active"
+                aria-pressed="true"
+                data-i18n="all"
+              >
+                All</button
+              ><button
+                data-filter="need"
+                aria-pressed="false"
+                data-i18n="needs"
+              >
+                Needs</button
+              ><button
+                data-filter="offer"
+                aria-pressed="false"
+                data-i18n="offers"
+              >
+                Offers</button
+              ><button
+                data-filter="matched"
+                aria-pressed="false"
+                data-i18n="matched"
+              >
+                Matched</button
+              ><button
+                data-filter="flagged"
+                aria-pressed="false"
+                data-i18n="flagged"
+              >
+                Flagged
+              </button>
+            </div>
+            <div class="search-row">
+              <input
+                id="search"
+                type="search"
+                aria-label="Search resources or areas"
+                placeholder="Search resources or areas…"
+              /><select id="category" aria-label="Category">
+                <option value="" data-i18n="categories">All categories</option>
+                <option value="medical">Medical</option>
+                <option value="rescue">Rescue</option>
+                <option value="water">Water</option>
+                <option value="food">Food</option>
+                <option value="shelter">Shelter</option>
+                <option value="supplies">Supplies</option>
+                <option value="power">Power</option>
+                <option value="transport">Transport</option>
+              </select>
+            </div>
+            <div class="filter-row">
+              <select id="urgency" aria-label="Minimum urgency">
+                <option value="1" data-i18n="urgencies">All urgencies</option>
+                <option value="3">U3+ Priority</option>
+                <option value="4">U4+ High</option>
+                <option value="5">U5 Critical</option></select
+              ><select id="message-language" aria-label="Message language">
+                <option value="" data-i18n="languages">All languages</option>
+                <option value="en">English</option>
+                <option value="ta">தமிழ்</option>
+                <option value="es">Español</option>
+                <option value="de">Deutsch</option></select
+              ><select id="sort" aria-label="Sort cards">
+                <option value="priority">Priority</option>
+                <option value="newest">Newest</option>
+                <option value="urgency">Urgency</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-list" id="card-list">
+            <div class="empty">Loading requests…</div>
+          </div>
+          <button id="load-more" hidden data-i18n="loadMore">Load more</button>
+        </section>
+        <section
+          class="panel map-panel"
+          id="map-panel"
+          aria-labelledby="map-title"
+        >
+          <div class="panel-header">
+            <div class="map-heading">
+              <h2 id="map-title" data-i18n="mapTitle">The coordination map</h2>
+              <small data-i18n="approximate">Approximate locations only</small>
+            </div>
+          </div>
+          <div
+            id="map"
+            role="region"
+            aria-label="Approximate needs and offers; use Request board for accessible details"
+          ></div>
+          <div class="map-tools">
+            <button id="fit-map" data-i18n="fit">Fit to requests ↗</button>
+          </div>
+          <div class="map-note" id="tile-error" hidden data-i18n="tileError">
+            Map tiles are unavailable. The request board still works.
+          </div>
+          <div class="map-legend">
+            <span
+              ><i class="legend-dot need"></i
+              ><span data-i18n="need">Need</span></span
+            ><span
+              ><i class="legend-dot"></i
+              ><span data-i18n="offer">Offer</span></span
+            ><span data-i18n="mapLegend">U1–U5 · urgency level</span
+            ><span data-i18n="matchLine">— Suggested connection</span>
+          </div>
+        </section>
+        <section
+          class="panel matches-panel"
+          id="matches-panel"
+          aria-labelledby="matches-title"
+        >
+          <div class="panel-header">
+            <h2 id="matches-title" data-i18n="matches">Suggested matches</h2>
+            <span class="count" id="match-count">0</span>
+          </div>
+          <div class="match-list" id="match-list">
+            <div class="empty">Looking for connections…</div>
+          </div>
+        </section>
+      </div>
+      <section
+        class="demo-panel"
+        id="demo-controls"
+        hidden
+        aria-label="Simulated storm drill"
+      >
+        <div class="demo-title">
+          <strong data-i18n="stormDrill">Try a storm drill</strong
+          ><small data-i18n="drillHelp"
+            >45 fictional messages. One shared desk.</small
+          >
+        </div>
+        <div class="drill-controls">
+          <button id="start-drill" class="primary" data-i18n="runDrill">
+            ▶ Run drill</button
+          ><select id="speed" aria-label="Drill speed">
+            <option value="1">1×</option>
+            <option value="3" selected>3×</option>
+            <option value="10">10×</option></select
+          ><button id="pause-drill" data-i18n="pause">Pause</button
+          ><button id="reset-drill" data-i18n="reset">Reset</button>
+        </div>
+        <form id="custom-form" class="custom-input">
+          <input
+            id="custom-message"
+            maxlength="1000"
+            required
+            aria-label="Simulated custom message"
+            placeholder="Need insulin in Velachery…"
+          /><button type="submit" data-i18n="send">Send ↗</button>
+        </form>
+      </section>
+    </main>
+    <div id="shared-footer"></div>
+    <nav class="tabs" aria-label="Operations views">
+      <button data-tab="map" class="active">
+        <span>◉</span><span data-i18n="map">Map</span></button
+      ><button data-tab="board">
+        <span>☷</span><span data-i18n="board">Board</span></button
+      ><button data-tab="matches">
+        <span>⇄</span><span data-i18n="matches">Matches</span></button
+      ><button data-tab="stats">
+        <span>▥</span><span data-i18n="stats">Stats</span>
+      </button>
+    </nav>
+    <div id="drawer-backdrop" class="backdrop" hidden></div>
+    <aside
+      id="drawer"
+      class="drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Request details"
+      hidden
+      tabindex="-1"
+    ></aside>
+    <dialog id="confirm-dialog">
+      <h2 id="confirm-title">Review match</h2>
+      <form id="confirm-form">
+        <p id="confirm-preview" class="preview"></p>
+        <label for="decision-note" data-i18n="note"
+          >Optional coordinator note</label
+        ><textarea id="decision-note" maxlength="500" rows="2"></textarea>
+        <div class="actions">
+          <button type="button" id="cancel-decision" data-i18n="cancel">
+            Cancel</button
+          ><button
+            type="submit"
+            id="confirm-action"
+            class="primary"
+            data-i18n="confirm"
+          >
+            Confirm
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="login-dialog">
+      <h2 data-i18n="login">Coordinator login</h2>
+      <form id="login-form">
+        <label for="login-token" data-i18n="token">Coordinator token</label
+        ><input
+          id="login-token"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+        <p class="muted" data-i18n="loginHelp">
+          Your token stays in a secure session cookie.
+        </p>
+        <div class="actions">
+          <button type="button" id="cancel-login" data-i18n="cancel">
+            Cancel</button
+          ><button type="submit" class="primary" data-i18n="login">
+            Log in
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div id="announcements" class="sr-only" aria-live="polite"></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

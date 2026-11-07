@@ -1,7 +1,113 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>About · ReliefSync Desk</title><link rel="icon" href="/static/img/favicon.svg"><link rel="stylesheet" href="/static/css/tokens.css"><link rel="stylesheet" href="/static/css/app.css"><script type="module" src="/static/js/pages.js"></script></head><body><a class="skip" href="#main">Skip to content</a><div id="shared-header"></div><main id="main" class="prose"><nav aria-label="Page navigation"><a href="/">Desk</a> · <a href="/about">About</a> · <a href="/architecture">System</a> · <a href="/join">Join</a> · <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a></nav><p class="eyebrow">RELIEFSYNC DESK / ABOUT</p><h1>From chat chaos to coordinated rescue.</h1><p class="lead">A volunteer dispatch co-pilot with a human in the loop. Multilingual messages become structured needs and offers, repeats are grouped, and nearby resources are suggested for coordinator approval.</p>
-<h2>Why coordination matters</h2><p>During the December 2023 Chennai floods, residents reported unanswered or busy civic helplines. Volunteers carried out rescues in low-lying areas. <a href="https://www.thenewsminute.com/amp/story/tamil-nadu/chennai-floods-helplines-inundated-people-struggle-to-contact-authorities">The News Minute</a> and <a href="https://www.dtnext.in/news/city/calls-to-govt-helplines-go-unanswered-754073">DT Next</a> describe the difficulty of reaching assistance.</p>
-<p>A volunteer account describes at least a thousand daily requests and reviewing over 50,000 requests, including repeats. <a href="https://www.dtnext.in/volunteer-diaries-we-had-calls-regarding-pregnant-women-being-stranded">Read the volunteer account</a>. Another account describes miscommunication and redirected resources despite coordination groups: <a href="https://www.dtnext.in/news/city/volunteers-the-undying-spirit-of-chennai-soars-on-social-media-753635">DT Next on volunteer coordination</a>.</p>
-<p>During the October–November 2024 Valencia floods, volunteers organised through social platforms, including a Telegram channel with more than 14,000 members. Reports describe disorganised official coordination and a fake emergency number circulating. <a href="https://www.izquierdadiario.es/Desborde-de-solidaridad-ante-la-inaccion-del-Gobierno-miles-de-voluntarios-autoorganizados-se">Volunteer organising</a>, <a href="https://inspain.news/?p=40691">coordination difficulties</a>, <a href="https://thestar.com.my/tech/tech-news/2024/11/08/online-disinformation-exacerbates-spain-flood-disaster">misinformation reporting</a>.</p>
-<p>Volunteer helplines are a practical starting point: <a href="https://citizenmatters.in/citizen-monsoon-helpline-in-tambaram/">Citizen Matters describes Tambaram’s helpline</a>, staffed by about 70 volunteers across five zones.</p>
-<h2>One loop, human judgment throughout</h2><article><ol><li>Post a concrete need or offer in Telegram, or try a simulated message.</li><li>The desk extracts the resource, approximate area, urgency and confidence.</li><li>It groups repeat reports and suggests compatible resources nearby.</li><li>A coordinator reviews the exact notification and approves a connection.</li><li>Only then does the bot notify the originating chat.</li></ol></article>
-<h2>Honest limits</h2><p>This is a hackathon prototype, not an emergency service. Telegram intake only; no WhatsApp group reading or live call handling. Extraction can be wrong. Fallback summaries retain the original wording and do not translate it. Demo participants and drill messages are simulated. We have no official emergency-service integration or verified volunteer network.</p></main><div id="shared-footer"></div><div id="toast" class="toast" role="status" hidden></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>About · ReliefSync Desk</title>
+    <link rel="icon" href="/static/img/favicon.svg" />
+    <link rel="stylesheet" href="/static/css/tokens.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script type="module" src="/static/js/pages.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="shared-header"></div>
+    <main id="main" class="prose">
+      <nav aria-label="Page navigation">
+        <a href="/">Desk</a> · <a href="/about">About</a> ·
+        <a href="/architecture">System</a> · <a href="/join">Join</a> ·
+        <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a>
+      </nav>
+      <p class="eyebrow">RELIEFSYNC DESK / ABOUT</p>
+      <h1>From chat chaos to coordinated rescue.</h1>
+      <p class="lead">
+        A volunteer dispatch co-pilot with a human in the loop. Multilingual
+        messages become structured needs and offers, repeats are grouped, and
+        nearby resources are suggested for coordinator approval.
+      </p>
+      <h2>Why coordination matters</h2>
+      <p>
+        During the December 2023 Chennai floods, residents reported unanswered
+        or busy civic helplines. Volunteers carried out rescues in low-lying
+        areas.
+        <a
+          href="https://www.thenewsminute.com/amp/story/tamil-nadu/chennai-floods-helplines-inundated-people-struggle-to-contact-authorities"
+          >The News Minute</a
+        >
+        and
+        <a
+          href="https://www.dtnext.in/news/city/calls-to-govt-helplines-go-unanswered-754073"
+          >DT Next</a
+        >
+        describe the difficulty of reaching assistance.
+      </p>
+      <p>
+        A volunteer account describes at least a thousand daily requests and
+        reviewing over 50,000 requests, including repeats.
+        <a
+          href="https://www.dtnext.in/volunteer-diaries-we-had-calls-regarding-pregnant-women-being-stranded"
+          >Read the volunteer account</a
+        >. Another account describes miscommunication and redirected resources
+        despite coordination groups:
+        <a
+          href="https://www.dtnext.in/news/city/volunteers-the-undying-spirit-of-chennai-soars-on-social-media-753635"
+          >DT Next on volunteer coordination</a
+        >.
+      </p>
+      <p>
+        During the October–November 2024 Valencia floods, volunteers organised
+        through social platforms, including a Telegram channel with more than
+        14,000 members. Reports describe disorganised official coordination and
+        a fake emergency number circulating.
+        <a
+          href="https://www.izquierdadiario.es/Desborde-de-solidaridad-ante-la-inaccion-del-Gobierno-miles-de-voluntarios-autoorganizados-se"
+          >Volunteer organising</a
+        >,
+        <a href="https://inspain.news/?p=40691">coordination difficulties</a>,
+        <a
+          href="https://thestar.com.my/tech/tech-news/2024/11/08/online-disinformation-exacerbates-spain-flood-disaster"
+          >misinformation reporting</a
+        >.
+      </p>
+      <p>
+        Volunteer helplines are a practical starting point:
+        <a
+          href="https://citizenmatters.in/citizen-monsoon-helpline-in-tambaram/"
+          >Citizen Matters describes Tambaram’s helpline</a
+        >, staffed by about 70 volunteers across five zones.
+      </p>
+      <h2>One loop, human judgment throughout</h2>
+      <article>
+        <ol>
+          <li>
+            Post a concrete need or offer in Telegram, or try a simulated
+            message.
+          </li>
+          <li>
+            The desk extracts the resource, approximate area, urgency and
+            confidence.
+          </li>
+          <li>
+            It groups repeat reports and suggests compatible resources nearby.
+          </li>
+          <li>
+            A coordinator reviews the exact notification and approves a
+            connection.
+          </li>
+          <li>Only then does the bot notify the originating chat.</li>
+        </ol>
+      </article>
+      <h2>Honest limits</h2>
+      <p>
+        This is a hackathon prototype, not an emergency service. Telegram intake
+        only; no WhatsApp group reading or live call handling. Extraction can be
+        wrong. Fallback summaries retain the original wording and do not
+        translate it. Demo participants and drill messages are simulated. We
+        have no official emergency-service integration or verified volunteer
+        network.
+      </p>
+    </main>
+    <div id="shared-footer"></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

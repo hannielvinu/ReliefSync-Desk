@@ -1,6 +1,6 @@
 # Deploy on Vultr Compute
 
-No live deployment is claimed by this repository. The development environment ran Windows/Python 3.11; Docker and a Vultr account were unavailable. Validate these assets on the target Ubuntu host before sharing the URL.
+No live deployment is claimed by this repository. Development ran Windows/Python 3.11. The production Docker Compose image, Caddy proxy and simulated dispatch loop passed Ubuntu/Python 3.12 GitHub CI. A Vultr account/host was unavailable; validate the setup script, DNS and public HTTPS on the target host before sharing its URL.
 
 ## 1. Create the host
 

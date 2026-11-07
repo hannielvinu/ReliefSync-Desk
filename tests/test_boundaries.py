@@ -56,6 +56,13 @@ async def test_non_ascii_login_fails_cleanly(desk):
     assert (await client.post("/api/login", json={"token": "குறியீடு"})).status_code == 401
 
 
+async def test_missing_api_route_has_consistent_error_shape(desk):
+    _, client = desk
+    response = await client.get("/api/unknown/path")
+    assert response.status_code == 404
+    assert set(response.json()) == {"error", "detail"}
+
+
 async def test_llm_missing_fields_is_retried_and_falls_back(desk, respx_mock):
     app, client = desk
     s = app.state.settings

@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api import router
 from app.config import Settings
@@ -71,7 +72,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/api/openapi.json",
         redoc_url=None,
     )
-    limiter = RateLimiter(120, 2)
+    limiter = RateLimiter(240, 4)
     login_limiter = RateLimiter(5, 1 / 60)
 
     @app.middleware("http")
@@ -119,8 +120,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             response.headers["Cache-Control"] = "no-store"
         return response
 
-    @app.exception_handler(HTTPException)
-    async def http_error(request: Request, exc: HTTPException):
+    @app.exception_handler(StarletteHTTPException)
+    async def http_error(request: Request, exc: StarletteHTTPException):
         return JSONResponse(
             {"error": str(exc.status_code), "detail": exc.detail}, status_code=exc.status_code
         )

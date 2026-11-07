@@ -179,6 +179,12 @@
       "width": 1920,
       "height": 1080,
       "horizontal_overflow": false
+    },
+    {
+      "page": "/ (Tamil)",
+      "width": 390,
+      "height": 844,
+      "horizontal_overflow": false
     }
   ],
   "javascript_errors": []

@@ -1,1 +1,77 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Architecture · ReliefSync Desk</title><link rel="icon" href="/static/img/favicon.svg"><link rel="stylesheet" href="/static/css/tokens.css"><link rel="stylesheet" href="/static/css/app.css"><script type="module" src="/static/js/pages.js"></script></head><body><a class="skip" href="#main">Skip to content</a><div id="shared-header"></div><main id="main" class="prose"><nav aria-label="Page navigation"><a href="/">Desk</a> · <a href="/about">About</a> · <a href="/architecture">System</a> · <a href="/join">Join</a> · <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a></nav><p class="eyebrow">RELIEFSYNC DESK / ARCHITECTURE</p><h1>A small system. A deliberate human checkpoint.</h1><p class="lead">One FastAPI process serves the desk, API, queue workers and Telegram long polling. SQLite holds durable intake, suggestions and the audit trail.</p><img class="architecture-img" src="/static/img/architecture.svg" alt="Telegram and simulated intake enter a durable queue, then extraction, location lookup and triage, then match suggestions, human approval and Telegram notification."><h2>From message to decision</h2><article><p><strong>Intake:</strong> Telegram updates and the protected intake endpoint persist messages before processing. Duplicate Telegram delivery is idempotent; unfinished queued intake is restored on restart.</p><p><strong>Understanding:</strong> A configurable Chat Completions service extracts validated fields. Timeouts and provider errors fall back to visibly labelled rules. Gazetteer lookup works without network access; remote geocoding is opt-in and cached.</p><p><strong>Coordination:</strong> Same-sender repeats are grouped. Different senders stay separate. Compatible items within the configured radius become suggestions, with score breakdowns.</p><p><strong>Human approval:</strong> A transaction prevents two coordinators from allocating the same card. Approval reserves the pair and rejects conflicting suggestions. Notifications have a visible delivery state and an explicit retry on failure.</p></article><h2>Private by design</h2><p>Public lists receive redacted text and coordinates placed within an approximate grid cell. Exact coordinates and raw source text are available only in authenticated coordinator details. Simulation never posts into Telegram.</p><h2>Where it runs</h2><p>Vultr Ubuntu Compute → Caddy HTTPS → non-root Python container → persistent SQLite volume. Use a single Uvicorn worker. Higher traffic requires a shared queue, transactional server database and distributed limits before adding workers.</p></main><div id="shared-footer"></div><div id="toast" class="toast" role="status" hidden></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Architecture · ReliefSync Desk</title>
+    <link rel="icon" href="/static/img/favicon.svg" />
+    <link rel="stylesheet" href="/static/css/tokens.css" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script type="module" src="/static/js/pages.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="shared-header"></div>
+    <main id="main" class="prose">
+      <nav aria-label="Page navigation">
+        <a href="/">Desk</a> · <a href="/about">About</a> ·
+        <a href="/architecture">System</a> · <a href="/join">Join</a> ·
+        <a href="/eval">Evaluation</a> · <a href="/safety">Safety</a>
+      </nav>
+      <p class="eyebrow">RELIEFSYNC DESK / ARCHITECTURE</p>
+      <h1>A small system. A deliberate human checkpoint.</h1>
+      <p class="lead">
+        One FastAPI process serves the desk, API, queue workers and Telegram
+        long polling. SQLite holds durable intake, suggestions and the audit
+        trail.
+      </p>
+      <img
+        class="architecture-img"
+        src="/static/img/architecture.svg"
+        alt="Telegram and simulated intake enter a durable queue, then extraction, location lookup and triage, then match suggestions, human approval and Telegram notification."
+      />
+      <h2>From message to decision</h2>
+      <article>
+        <p>
+          <strong>Intake:</strong> Telegram updates and the protected intake
+          endpoint persist messages before processing. Duplicate Telegram
+          delivery is idempotent; unfinished queued intake is restored on
+          restart.
+        </p>
+        <p>
+          <strong>Understanding:</strong> A configurable Chat Completions
+          service extracts validated fields. Timeouts and provider errors fall
+          back to visibly labelled rules. Gazetteer lookup works without network
+          access; remote geocoding is opt-in and cached.
+        </p>
+        <p>
+          <strong>Coordination:</strong> Same-sender repeats are grouped.
+          Different senders stay separate. Compatible items within the
+          configured radius become suggestions, with score breakdowns.
+        </p>
+        <p>
+          <strong>Human approval:</strong> A transaction prevents two
+          coordinators from allocating the same card. Approval reserves the pair
+          and rejects conflicting suggestions. Notifications have a visible
+          delivery state and an explicit retry on failure.
+        </p>
+      </article>
+      <h2>Private by design</h2>
+      <p>
+        Public lists receive redacted text and coordinates placed within an
+        approximate grid cell. Exact coordinates and raw source text are
+        available only in authenticated coordinator details. Simulation never
+        posts into Telegram.
+      </p>
+      <h2>Where it runs</h2>
+      <p>
+        Vultr Ubuntu Compute → Caddy HTTPS → non-root Python container →
+        persistent SQLite volume. Use a single Uvicorn worker. Higher traffic
+        requires a shared queue, transactional server database and distributed
+        limits before adding workers.
+      </p>
+    </main>
+    <div id="shared-footer"></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

@@ -119,7 +119,7 @@ The [Vultr guide](deploy/DEPLOY.md) covers Ubuntu, Docker Compose + Caddy, HTTPS
 sudo env PUBLIC_BASE_URL=https://desk.example.org SITE_ADDRESS=desk.example.org bash deploy/setup_vultr.sh
 ```
 
-This command runs **on your Vultr instance**, after cloning the repo and configuring DNS. Docker/Ubuntu execution was not available in the Windows development environment; deployment must be smoke-tested on the server.
+This command runs **on your Vultr instance**, after cloning the repo and configuring DNS. Docker Compose, the non-root production container, Caddy, and the simulated insulin approval/completion loop were executed successfully in Ubuntu GitHub CI. A real Vultr host and public HTTPS/domain setup still require verification.
 
 ## Project map
 
