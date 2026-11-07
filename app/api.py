@@ -23,7 +23,8 @@ def authenticated(request: Request) -> bool:
     settings = request.app.state.settings
     bearer = request.headers.get("authorization", "").removeprefix("Bearer ")
     return bool(
-        settings.coordinator_token and hmac.compare_digest(bearer, settings.coordinator_token)
+        settings.coordinator_token
+        and hmac.compare_digest(bearer.encode(), settings.coordinator_token.encode())
     ) or valid_session(request.cookies.get("session", ""), settings.salt)
 
 
@@ -75,7 +76,9 @@ async def config(request: Request) -> dict:
 @router.post("/api/login")
 async def login(body: Login, request: Request, response: Response) -> dict:
     s = request.app.state.settings
-    if not s.coordinator_token or not hmac.compare_digest(body.token, s.coordinator_token):
+    if not s.coordinator_token or not hmac.compare_digest(
+        body.token.encode(), s.coordinator_token.encode()
+    ):
         raise HTTPException(401, "Invalid coordinator token")
     response.set_cookie(
         "session",
@@ -124,9 +127,17 @@ async def cards(
         clauses.append("(item LIKE ? OR item_en LIKE ? OR location_text LIKE ?)")
         args.extend(["%" + q + "%"] * 3)
     priority_sql = "urgency*20 + min(repeat_count-1,5)*3 + min(max((julianday('now')-julianday(created_at))*144,0),10) + CASE WHEN vulnerable_flags!='[]' THEN 5 ELSE 0 END"
-    order = "id DESC" if sort == "newest" else "urgency DESC,id DESC" if sort == "urgency" else f"({priority_sql}) DESC,id DESC"
+    order = (
+        "id DESC"
+        if sort == "newest"
+        else "urgency DESC,id DESC"
+        if sort == "urgency"
+        else f"({priority_sql}) DESC,id DESC"
+    )
     rows = await request.app.state.db.all(
-        "SELECT * FROM cards WHERE " + " AND ".join(clauses) + f" ORDER BY {order} LIMIT ? OFFSET ?",
+        "SELECT * FROM cards WHERE "
+        + " AND ".join(clauses)
+        + f" ORDER BY {order} LIMIT ? OFFSET ?",
         (*args, limit + 1, cursor),
     )
     next_cursor = cursor + limit if len(rows) > limit else None
@@ -363,6 +374,10 @@ async def events(request: Request) -> StreamingResponse:
 async def ingest(body: Ingest, request: Request) -> dict:
     if not body.simulated:
         coordinator(request)
+    else:
+        # Public demo routing cannot collide with live Telegram identifiers.
+        body.chat_id = "api-demo:" + body.chat_id
+        body.sender_id = "api-demo:" + body.sender_id
     mid, created = await request.app.state.pipeline.ingest(body)
     return {"id": mid, "queued": created}
 

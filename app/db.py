@@ -104,7 +104,10 @@ class Database:
 
     async def forget(self, sender: str) -> None:
         async with self.transaction():
-            await self.execute("UPDATE cards SET status='open',updated_at=? WHERE status='matched' AND sender_hash!=? AND id IN (SELECT need_id FROM matches WHERE status='approved' AND offer_id IN (SELECT id FROM cards WHERE sender_hash=?) UNION SELECT offer_id FROM matches WHERE status='approved' AND need_id IN (SELECT id FROM cards WHERE sender_hash=?))", (now(), sender, sender, sender))
+            await self.execute(
+                "UPDATE cards SET status='open',updated_at=? WHERE status='matched' AND sender_hash!=? AND id IN (SELECT need_id FROM matches WHERE status='approved' AND offer_id IN (SELECT id FROM cards WHERE sender_hash=?) UNION SELECT offer_id FROM matches WHERE status='approved' AND need_id IN (SELECT id FROM cards WHERE sender_hash=?))",
+                (now(), sender, sender, sender),
+            )
             await self.execute(
                 "UPDATE matches SET status='rejected',note='Participant erased',decided_at=? WHERE need_id IN (SELECT id FROM cards WHERE sender_hash=?) OR offer_id IN (SELECT id FROM cards WHERE sender_hash=?)",
                 (now(), sender, sender),

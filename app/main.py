@@ -67,7 +67,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         title="ReliefSync Desk",
         version="1.0.0",
         lifespan=lifespan,
-        docs_url="/api/docs",
+        docs_url=None,
+        openapi_url="/api/openapi.json",
         redoc_url=None,
     )
     limiter = RateLimiter(120, 2)
@@ -139,8 +140,19 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def value_error(request: Request, exc: ValueError):
         return JSONResponse({"error": "invalid_request", "detail": str(exc)}, status_code=400)
 
+    @app.exception_handler(Exception)
+    async def internal_error(request: Request, exc: Exception):
+        logging.getLogger("app").error("request_failed type=%s", type(exc).__name__)
+        return JSONResponse(
+            {"error": "internal", "detail": "An internal error occurred"}, status_code=500
+        )
+
     app.include_router(router)
     app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
+
+    @app.get("/api/docs", include_in_schema=False)
+    async def api_docs():
+        return FileResponse(ROOT / "static/api-docs.html")
 
     @app.get("/")
     async def home():

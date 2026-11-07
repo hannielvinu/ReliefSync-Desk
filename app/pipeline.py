@@ -64,6 +64,8 @@ class Pipeline:
             )
             if old and not data.edited:
                 return old["id"], False
+            if old and bool(old["simulated"]) != data.simulated:
+                raise ValueError("Simulation boundary mismatch")
             if old and old["sender_hash"] != sender:
                 raise ValueError("Sender mismatch for edited message")
             if self.queue.full():
@@ -71,7 +73,7 @@ class Pipeline:
             if old:
                 mid = old["id"]
                 await self.db.execute(
-                    "UPDATE messages SET text_raw=?,text_redacted=?,processing_state='queued',pin_lat=?,pin_lng=? WHERE id=?",
+                    "UPDATE messages SET text_raw=?,text_redacted=?,processing_state='queued',pin_lat=COALESCE(?,pin_lat),pin_lng=COALESCE(?,pin_lng) WHERE id=?",
                     (data.text, redact(data.text), data.lat, data.lng, mid),
                 )
             else:
