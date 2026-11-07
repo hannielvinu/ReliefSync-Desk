@@ -2,7 +2,18 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-Category = Literal["rescue", "medical", "food", "water", "shelter", "power", "transport", "supplies", "info", "other"]
+Category = Literal[
+    "rescue",
+    "medical",
+    "food",
+    "water",
+    "shelter",
+    "power",
+    "transport",
+    "supplies",
+    "info",
+    "other",
+]
 Status = Literal["new", "needs_location", "open", "matched", "fulfilled", "rejected", "duplicate"]
 
 

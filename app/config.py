@@ -36,7 +36,9 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_secrets(self) -> "Settings":
-        if self.app_env == "production" and (len(self.salt) < 32 or len(self.coordinator_token) < 24):
+        if self.app_env == "production" and (
+            len(self.salt) < 32 or len(self.coordinator_token) < 24
+        ):
             raise ValueError("Production requires SALT >=32 and COORDINATOR_TOKEN >=24 characters")
         if self.telegram_mode == "webhook" and len(self.telegram_webhook_secret) < 24:
             raise ValueError("Webhook mode requires a secret >=24 characters")

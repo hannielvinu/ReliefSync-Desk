@@ -22,8 +22,11 @@ def sender_hash(sender: str, salt: str) -> str:
 
 def fuzz(lat: float, lng: float, card_id: int, salt: str) -> tuple[float, float]:
     digest = hmac.new(salt.encode(), str(card_id).encode(), hashlib.sha256).digest()
-    offsets = [0.15 + int.from_bytes(digest[i:i + 4], "big") / (2**32) * 0.7 for i in (0, 4)]
-    result = tuple(round(math.floor(coord / 0.005) * 0.005 + offset * 0.005, 6) for coord, offset in zip((lat, lng), offsets, strict=True))
+    offsets = [0.15 + int.from_bytes(digest[i : i + 4], "big") / (2**32) * 0.7 for i in (0, 4)]
+    result = tuple(
+        round(math.floor(coord / 0.005) * 0.005 + offset * 0.005, 6)
+        for coord, offset in zip((lat, lng), offsets, strict=True)
+    )
     if result == (lat, lng):
         return round(lat + 0.000001, 6), result[1]
     return result
@@ -35,8 +38,14 @@ def public_card(card: dict, settings: Settings, exact: bool = False) -> dict:
         result[key] = redact(str(result.get(key) or ""))
     if not exact:
         if result.get("lat") is not None and result.get("lng") is not None:
-            result["lat"], result["lng"] = fuzz(result["lat"], result["lng"], card["id"], settings.salt)
-        result["location_text"] = result.get("public_area") or "Approximate area" if result.get("lat") is not None else "Location needed"
+            result["lat"], result["lng"] = fuzz(
+                result["lat"], result["lng"], card["id"], settings.salt
+            )
+        result["location_text"] = (
+            result.get("public_area") or "Approximate area"
+            if result.get("lat") is not None
+            else "Location needed"
+        )
     return result
 
 

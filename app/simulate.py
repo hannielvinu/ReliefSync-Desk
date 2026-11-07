@@ -13,7 +13,11 @@ class Simulator:
         self.task: asyncio.Task | None = None
         self.position = 0
         self.run_id = secrets.token_hex(6)
-        self.scenario = json.loads((Path(__file__).resolve().parents[1] / "data/scenarios/storm_drill.json").read_text(encoding="utf-8"))
+        self.scenario = json.loads(
+            (Path(__file__).resolve().parents[1] / "data/scenarios/storm_drill.json").read_text(
+                encoding="utf-8"
+            )
+        )
 
     async def start(self, speed: int = 3) -> None:
         if self.task and not self.task.done():
@@ -29,7 +33,11 @@ class Simulator:
             previous = self.scenario[self.position - 1]["at"] if self.position else 0
             await asyncio.sleep(max(0, row["at"] - previous) / speed)
             payload = {k: v for k, v in row.items() if k != "at"}
-            payload.update(simulated=True, chat_id="drill-" + self.run_id, sender_id=self.run_id + "-" + row.get("sender_id", str(self.position)))
+            payload.update(
+                simulated=True,
+                chat_id="drill-" + self.run_id,
+                sender_id=self.run_id + "-" + row.get("sender_id", str(self.position)),
+            )
             await self.pipeline.ingest(Ingest(**payload))
             self.position += 1
 

@@ -11,7 +11,9 @@ from app.config import Settings
 from app.db import Database, now
 from app.security import redact
 
-GAZETTEER = json.loads((Path(__file__).resolve().parents[1] / "data/gazetteer.json").read_text(encoding="utf-8"))
+GAZETTEER = json.loads(
+    (Path(__file__).resolve().parents[1] / "data/gazetteer.json").read_text(encoding="utf-8")
+)
 
 
 def haversine(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
@@ -47,7 +49,9 @@ class Geocoder:
         self.lock = asyncio.Lock()
         self.last_request = 0.0
 
-    async def resolve(self, text: str, lat: float | None = None, lng: float | None = None) -> tuple[float | None, float | None, str, float]:
+    async def resolve(
+        self, text: str, lat: float | None = None, lng: float | None = None
+    ) -> tuple[float | None, float | None, str, float]:
         if lat is not None and lng is not None:
             return lat, lng, "pin", 1.0
         if not text.strip():
@@ -65,14 +69,22 @@ class Geocoder:
             await asyncio.sleep(max(0, 1.05 - (time.monotonic() - self.last_request)))
             self.last_request = time.monotonic()
             try:
-                response = await self.client.get(self.settings.geocoder_url, params={"q": query, "format": "json", "limit": 1}, headers={"User-Agent": self.settings.geocoder_user_agent}, timeout=8)
+                response = await self.client.get(
+                    self.settings.geocoder_url,
+                    params={"q": query, "format": "json", "limit": 1},
+                    headers={"User-Agent": self.settings.geocoder_user_agent},
+                    timeout=8,
+                )
                 response.raise_for_status()
                 results = response.json()
                 if results:
                     row = results[0]
                     lat, lng = float(row["lat"]), float(row["lon"])
                     async with self.db.transaction():
-                        await self.db.execute("INSERT OR REPLACE INTO geocache VALUES(?,?,?,?,?)", (query, lat, lng, row.get("display_name", ""), now()))
+                        await self.db.execute(
+                            "INSERT OR REPLACE INTO geocache VALUES(?,?,?,?,?)",
+                            (query, lat, lng, row.get("display_name", ""), now()),
+                        )
                     return lat, lng, "nominatim", 0.6
             except (httpx.HTTPError, ValueError, KeyError):
                 pass

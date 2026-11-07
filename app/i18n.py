@@ -13,4 +13,6 @@ LOCATION = {
 
 
 def acknowledgement(language: str, location_missing: bool = False) -> str:
-    return (LOCATION if location_missing else ACKS).get(language, (LOCATION if location_missing else ACKS)["en"])
+    return (LOCATION if location_missing else ACKS).get(
+        language, (LOCATION if location_missing else ACKS)["en"]
+    )

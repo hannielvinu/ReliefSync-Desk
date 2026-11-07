@@ -1,9 +1,10 @@
 import asyncio
 import json
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, AsyncIterator
+from typing import Any
 
 import aiosqlite
 
@@ -88,21 +89,41 @@ class Database:
         rows = await self.all(sql, args)
         return rows[0] if rows else None
 
-    async def audit(self, action: str, entity: str, entity_id: int, detail: dict | None = None, actor: str = "system") -> None:
-        await self.execute("INSERT INTO audit_log(ts,actor,action,entity,entity_id,detail) VALUES(?,?,?,?,?,?)", (now(), actor, action, entity, entity_id, json.dumps(detail or {})))
+    async def audit(
+        self,
+        action: str,
+        entity: str,
+        entity_id: int,
+        detail: dict | None = None,
+        actor: str = "system",
+    ) -> None:
+        await self.execute(
+            "INSERT INTO audit_log(ts,actor,action,entity,entity_id,detail) VALUES(?,?,?,?,?,?)",
+            (now(), actor, action, entity, entity_id, json.dumps(detail or {})),
+        )
 
     async def forget(self, sender: str) -> None:
         async with self.transaction():
-            await self.execute("UPDATE matches SET status='rejected',note='Participant erased',decided_at=? WHERE need_id IN (SELECT id FROM cards WHERE sender_hash=?) OR offer_id IN (SELECT id FROM cards WHERE sender_hash=?)", (now(), sender, sender))
-            await self.execute("DELETE FROM audit_log WHERE entity='card' AND entity_id IN (SELECT id FROM cards WHERE sender_hash=?)", (sender,))
+            await self.execute(
+                "UPDATE matches SET status='rejected',note='Participant erased',decided_at=? WHERE need_id IN (SELECT id FROM cards WHERE sender_hash=?) OR offer_id IN (SELECT id FROM cards WHERE sender_hash=?)",
+                (now(), sender, sender),
+            )
+            await self.execute(
+                "DELETE FROM audit_log WHERE entity='card' AND entity_id IN (SELECT id FROM cards WHERE sender_hash=?)",
+                (sender,),
+            )
             await self.execute("DELETE FROM cards WHERE sender_hash=?", (sender,))
             await self.execute("DELETE FROM messages WHERE sender_hash=?", (sender,))
             await self.execute("DELETE FROM participants WHERE sender_hash=?", (sender,))
 
     async def purge_simulated(self) -> None:
         async with self.transaction():
-            await self.execute("DELETE FROM matches WHERE need_id IN (SELECT id FROM cards WHERE simulated=1) OR offer_id IN (SELECT id FROM cards WHERE simulated=1)")
-            await self.execute("DELETE FROM audit_log WHERE entity='card' AND entity_id IN (SELECT id FROM cards WHERE simulated=1)")
+            await self.execute(
+                "DELETE FROM matches WHERE need_id IN (SELECT id FROM cards WHERE simulated=1) OR offer_id IN (SELECT id FROM cards WHERE simulated=1)"
+            )
+            await self.execute(
+                "DELETE FROM audit_log WHERE entity='card' AND entity_id IN (SELECT id FROM cards WHERE simulated=1)"
+            )
             await self.execute("DELETE FROM cards WHERE simulated=1")
             await self.execute("DELETE FROM messages WHERE simulated=1")
             await self.execute("DELETE FROM participants WHERE simulated=1")
