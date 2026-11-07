@@ -14,3 +14,41 @@ jobs:
       - run: ruff format --check app scripts tests
       - run: pytest --cov=app --cov-report=term-missing --cov-fail-under=80
       - run: python scripts/eval.py
+      - name: Start production containers with generated test secrets
+        run: |
+          python - <<'PY'
+          import secrets
+          from pathlib import Path
+          text = Path('.env.example').read_text().replace('APP_ENV=development', 'APP_ENV=production')
+          text = text.replace('\nSALT=\n', '\nSALT=' + secrets.token_hex(32) + '\n')
+          text = text.replace('\nCOORDINATOR_TOKEN=\n', '\nCOORDINATOR_TOKEN=' + secrets.token_urlsafe(32) + '\n')
+          Path('.env').write_text(text)
+          PY
+          docker compose up -d --build --wait
+      - name: Verify Caddy and container dispatch loop
+        run: |
+          python - <<'PY'
+          import time
+          import httpx
+          with httpx.Client(base_url='http://127.0.0.1', timeout=10) as c:
+              assert c.get('/health').json()['db'] == 'ok'
+              assert c.get('/').status_code == 200
+              assert c.post('/api/simulate/start', json={'speed': 10}).status_code == 200
+              for _ in range(20):
+                  time.sleep(.5)
+                  rows = c.get('/api/matches').json()['items']
+                  if rows:
+                      break
+              match = next(m for m in rows if m['need']['item_en'] == 'insulin')
+              result = c.post(f"/api/matches/{match['id']}/approve", json={})
+              assert result.status_code == 200, result.text
+              assert result.json()['notification_state'] == 'would_send'
+              assert c.post(f"/api/matches/{match['id']}/complete", json={}).status_code == 200
+              print('Production container + Caddy + simulated insulin approval/completion passed')
+          PY
+      - name: Container logs on failure
+        if: failure()
+        run: docker compose logs --tail=100
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v

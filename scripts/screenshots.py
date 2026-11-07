@@ -35,6 +35,9 @@ async def main() -> None:
         page = await context.new_page()
         page.on("pageerror", lambda error: errors.append(str(error)))
         await context.request.post(args.url + "/api/simulate/reset", data={})
+        if args.record:
+            await page.goto(args.url + "/about")
+            await page.wait_for_timeout(10000)
         response = await page.goto(args.url)
         assert response.status == 200
         await page.wait_for_selector("#start-drill")
@@ -95,6 +98,23 @@ async def main() -> None:
                     }
                 )
             await page.set_viewport_size({"width": 1440, "height": 1000})
+        await page.goto(args.url)
+        await page.set_viewport_size({"width": 390, "height": 844})
+        await page.locator(".tabs button[data-tab=board]").click()
+        await page.get_by_label("Interface language").select_option("ta")
+        await page.wait_for_timeout(500)
+        await page.screenshot(path=str(output / "dashboard-tamil.png"), full_page=True)
+        checks.append(
+            {
+                "page": "/ (Tamil)",
+                "width": 390,
+                "height": 844,
+                "horizontal_overflow": await page.evaluate(
+                    "document.documentElement.scrollWidth > innerWidth"
+                ),
+            }
+        )
+        await page.get_by_label("Interface language").select_option("en")
         video = page.video
         await context.close()
         if video:
